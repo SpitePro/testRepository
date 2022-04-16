@@ -17,7 +17,7 @@ class Builder {
   void addAfter(String x, String t) {
     int index = (subString(endpoint!, x))!;
     if (index == -1) {
-      print("Данное значение не найдено!");
+      print("Pattern \"$x\" was not found!");
       return;
     }
     List<String> text = endpoint!.split('').toList();
@@ -29,7 +29,7 @@ class Builder {
   void remove(String t) {
     int index = (subString(endpoint!, t))!;
     if (index == -1) {
-      print("Данное значение не найдено!");
+      print("Pattern \"$t\" was not found!");
       return;
     }
     List<String> text = endpoint!.split('').toList();
@@ -39,6 +39,33 @@ class Builder {
     }
     text.removeAt(index);
     endpoint = text.join();
+  }
+
+  void removeMore(List<String> t) {
+    List<String> text = endpoint!.split('').toList();
+    List<int> words = [];
+    for (var n in t){
+      int index = (subString(endpoint!, n))!;
+      if (index == -1) {
+        print("Pattern \"$n\" was not found!");
+      } else {
+        words.add(index);
+  
+      }
+    }
+
+    if(!(words.isEmpty)){
+      words.sort((a, b) => a.compareTo(b));
+      var reversedWords = new List.from(words.reversed);
+      for (var index in reversedWords){
+        text.removeAt(index);
+        while (text[index] != "/") {
+          text.removeAt(index);
+        }
+        text.removeAt(index);
+        endpoint = text.join();
+      }
+    }
   }
 
   void removeFront() {
@@ -57,6 +84,11 @@ class Builder {
       text.removeAt(text.length - 1);
     }
     endpoint = text.join();
+  }
+
+  void change(String x, String t){
+    addAfter(x, t);
+    remove(x);
   }
 
   Map table(String pattern) {
@@ -92,7 +124,7 @@ class Builder {
     }
     return -1;
   }
-
+  
   Builder({this.endpoint = "/"});
 }
 
@@ -116,4 +148,8 @@ void main() {
   print(epoint.endpoint);
   epoint.addAfter("test10", "hi");
   epoint.remove("test10");
+  epoint.removeMore(["test2", "test11", "test4", "test6"]);
+  print(epoint.endpoint);
+  epoint.change("ch", "test3");
+  print(epoint.endpoint);
 }
